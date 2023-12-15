@@ -22,22 +22,22 @@ public class ReceipDetailView {
 	private TableView<ReceiptDetail> table;
 	private TableView<ReceiptDetail> tableTemp;
 	
-//	private TableColumn<OrderItem, String> menuItemName;
-//	private TableColumn<OrderItem, Number> menuItemPrice;
-//	private TableColumn<OrderItem, Number> quantity;
-	
 	private TableColumn<ReceiptDetail, String> menuItemName;
 	private TableColumn<ReceiptDetail, Number> menuItemPrice;
 	private TableColumn<ReceiptDetail, Number> quantity;
+	
 	public ReceipDetailView(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		table = tableDetailReceipt();
+		
 		VBox root = new VBox();
+		table = tableDetailReceipt();
 		GridPane form = createReceiptForm(table);
 		VBox.setMargin(form, new Insets(20));
 		root.getChildren().addAll(table, form);
 		table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-		Scene scene = new Scene(root, 800, 600);
+		
+		Scene scene = new Scene(root, 800, 400);
 		Image image = new Image("/image/icons/logo.png");
         primaryStage.getIcons().add(image);
 		primaryStage.setScene(scene);
@@ -51,7 +51,7 @@ public class ReceipDetailView {
 		form.setHgap(10);
 		backButton = new Button("Back");
 
-		form.add(backButton, 0, 6);
+		form.add(backButton, 0, 3);
 		
 		return form;
 	}
@@ -67,7 +67,6 @@ public class ReceipDetailView {
 		
 		quantity = new TableColumn<>("Quantity");
 		quantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-		
 		
 		tableTemp.getColumns().add(menuItemName);
 		tableTemp.getColumns().add(menuItemPrice);

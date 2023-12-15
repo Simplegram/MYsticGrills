@@ -73,7 +73,7 @@ public class Receipt {
 
 		public static ArrayList<ReceiptDetail> getReceiptById(int receiptId) {
 		    ArrayList<ReceiptDetail> receipts = new ArrayList<>();
-		    String query = "SELECT m.menuItemName, m.menuItemPrice, oi.quantity FROM orders o JOIN orderitem oi ON oi.orderID = o.orderId JOIN menuitem m ON m.menuItemId = oi.menuItem JOIN receipt r ON r.receiptOrder = o.orderId WHERE r.receiptOrder = ?";
+		    String query = "SELECT m.menuItemName AS Name, m.menuItemPrice AS Price, oi.quantity AS Quantity FROM orders o JOIN orderitem oi ON oi.orderID = o.orderId JOIN menuitem m ON m.menuItemId = oi.menuItem JOIN receipt r ON r.receiptOrder = o.orderId WHERE r.receiptOrder = ?";
 		    PreparedStatement ps = Connect.getConnection().prepareStatement(query);
 	        ResultSet rs = null;
 	        
@@ -83,11 +83,12 @@ public class Receipt {
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	        }
+	        
 		    try {
 		        while (rs.next()) {
-		            String menuItemName = rs.getString("m.menuItemName");
-		            double menuItemPrice = rs.getDouble("m.menuItemPrice");
-		            int quantity = rs.getInt("oi.quantity");
+		            String menuItemName = rs.getString("Name");
+		            double menuItemPrice = rs.getDouble("Price");
+		            int quantity = rs.getInt("Quantity");
 		            
 		            receipts.add(new ReceiptDetail(menuItemName, menuItemPrice, quantity));
 		        } 

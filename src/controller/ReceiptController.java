@@ -49,36 +49,16 @@ public class ReceiptController {
 		this.user = user;
 		this.orderId = orderId;
 		initReceiptDetailHandler();
-		loadReceiptDetailTableData();
+		loadReceiptDetailData();
 	}
 	
 	private void loadTableData() {
 		ArrayList<Receipt> receipt = Receipt.getAllReceipts();
 		receiptView.getTable().getItems().setAll(receipt);
 	}
-	private void loadReceiptDetailTableData() {
-		tableTemp = receipDetailView.getTableTemp();
-		
-		menuItemName = receipDetailView.getMenuItemName();
-		menuItemPrice = receipDetailView.getMenuItemPrice();
-		quantity = receipDetailView.getQuantity();
-		
-		ArrayList<OrderItem> orderItems = OrderItem.getAllOrderItemsByOrderId(Integer.parseInt(orderId));
-		
-		for (OrderItem orderItem : orderItems) {
-			MenuItem menuItem = MenuItem.getMenuItemById(orderItem.getMenuItem());
-			
-			Double totalPrice = orderItem.getQuantity() * menuItem.getMenuItemPrice();
-			
-			menuItemName.setCellValueFactory(c -> new SimpleStringProperty(menuItem.getMenuItemName()));
-			menuItemPrice.setCellValueFactory(c -> new SimpleDoubleProperty(totalPrice));
-			quantity.setCellValueFactory(c -> new SimpleIntegerProperty(orderItem.getQuantity()));
-			
-			tableTemp.getColumns().setAll(menuItemName, menuItemPrice, quantity);
-		}
-	}
+	
 	private void loadReceiptDetailData() {
-		ArrayList<ReceiptDetail> receipt = Receipt.getReceiptById(Integer.parseInt(receiptView.getOrderIdInput().getText()));
+		ArrayList<ReceiptDetail> receipt = Receipt.getReceiptById(Integer.parseInt(orderId));
 		receipDetailView.getTable().getItems().setAll(receipt);
 
 	}
@@ -103,7 +83,6 @@ public class ReceiptController {
 			String orderId = receiptView.getOrderIdInput().getText();
 			ReceipDetailView receiptDetailView = new ReceipDetailView(primaryStage);
 			ReceiptController receiptController = new ReceiptController(receiptDetailView, user, orderId);
-			
 		});
 		
 		TableColumn<MenuItem, String> menuItemName = new TableColumn<>("Menu Item Name");
