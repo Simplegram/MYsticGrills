@@ -12,6 +12,7 @@ import view.CustomerView;
 import view.OrderItemView;
 import view.OrderView;
 import view.ReceiptView;
+import view.WaiterView;
 
 public class CustomerController {
 	private Stage primaryStage;
@@ -116,9 +117,18 @@ public class CustomerController {
 			
 		}
 		
-		else if(userRole.equals("Waiter")) {
-			vbox.getChildren().addAll(greetings, role, orderViewButton, logoutButton);
-			primaryStage.setTitle("Waiter Page");
+
+	    else if(userRole.equals("Waiter")) {
+	            customerView.getOrderViewButton().setOnAction(e-> {
+	                primaryStage = customerView.getPrimaryStage();
+	                WaiterView waiterView = new WaiterView(primaryStage);
+	                WaiterController waiterController = new WaiterController(waiterView, user);
+	            });
+	            
+	            vbox.getChildren().addAll(greetings, role, orderViewButton, logoutButton);
+	            primaryStage.setTitle("Waiter Page");
+
+	        
 
 		}
 	}

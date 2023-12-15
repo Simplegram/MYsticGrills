@@ -19,6 +19,7 @@ import view.ChefView;
 import view.CustomerMenuView;
 import view.CustomerView;
 import view.OrderView;
+import view.WaiterView;
 import view.OrderItemView;
 import java.sql.Date;
 
@@ -56,6 +57,7 @@ public class OrderController extends Controller {
 		} else if(userRole.equals("Waiter")) {
 			loadWaitersTableData();
 		}
+		
 	}
 	
 	public OrderController(CustomerMenuView customerMenuView, User user) {
@@ -86,10 +88,11 @@ public class OrderController extends Controller {
 			initChefHandler();
 			initCustUIHandler();
 		}
-//		}else if(userRole.equals("Chef")) {
-//			initChefHandler();
-//			initChefUIHandler();
-//		}
+        else if(userRole.equals("Waiter")) {
+            setupOrderItemSelectionListener();
+            initWaiterHandler();
+            initCustUIHandler();
+        }
 		
 	}
 
@@ -99,7 +102,7 @@ public class OrderController extends Controller {
 	}
 	
 	void loadCashierData() {
-		ArrayList<Order> orders = Order.getAllOrders();
+		ArrayList<Order> orders = Order.getAllCashierOrders();
 		orderView.getTable().getItems().setAll(orders);
 	}
 	
@@ -334,10 +337,13 @@ public class OrderController extends Controller {
 			
 			Order order = Order.getOrderByOrderId(orderId);
 			
-			if(!order.getOrderStatus().equals("PENDING")) {
-				showAlert(Alert.AlertType.ERROR, "Error", null, "Order already paid!");
-				return;
-			}
+			if(order.getOrderStatus().equals("PAID")) {
+                showAlert(Alert.AlertType.ERROR, "Error", null, "Order has already been paid!");
+                return;
+            } else if(!order.getOrderStatus().equals("SERVED")) {
+                showAlert(Alert.AlertType.ERROR, "Error", null, "Order has not been completed yet.");
+                return;
+            }
 			
 			int totalPrice = Integer.parseInt(orderItemView.getMenuItemInput().getText());
 			if (payment_t.isEmpty()) {
@@ -465,6 +471,88 @@ public class OrderController extends Controller {
 			OrderView orderView = new OrderView(primaryStage);
 			OrderController orderController = new OrderController(orderView, user);
 		});
+		
+		orderItemView.getUpdateButton().setOnAction(e -> {
+			ArrayList<OrderItem> orderItems;
+			MenuItem menuItems;
+			Order order;
+			
+			String orderId_t = orderItemView.getOrderIdInput().getText();
+			String menuItem_t = orderItemView.getMenuItemInput().getText();
+			String quantity_t = orderItemView.getQuantityInput().getText();
+			
+			if (orderId_t.isEmpty()) {
+				showAlert(Alert.AlertType.ERROR, "Error", null, "Please select an item.");
+				return;
+			}
+			
+			if (quantity_t.isEmpty()) {
+				showAlert(Alert.AlertType.ERROR, "Error", null, "Quantity can't be null!");
+				return;
+			}
+			
+			int orderId = Integer.parseInt(orderId_t);
+			int menuItem = Integer.parseInt(menuItem_t);
+			int quantity = Integer.parseInt(quantity_t);
+			
+			int currMenuQuantity, orderTotal, menuPrice;
+			orderItems = OrderItem.getAllOrderItemsByOrderId(orderId);
+			menuItems = MenuItem.getMenuItemById(menuItem);
+			order = Order.getOrderByOrderId(orderId);
+			
+			if(!order.getOrderStatus().equals("PENDING")) {
+				showAlert(Alert.AlertType.ERROR, "Error", null, "You can only update PENDING orders.");
+				return;
+			}
+			
+			if(quantity < 0) {
+				showAlert(Alert.AlertType.ERROR, "Error", null, "Quantity can only be 0 or more (0 means that the item will be removed from the order)");
+				return;
+			} else if(quantity >= 0){
+				for (OrderItem orderItem : orderItems) {
+					if (orderItem.getMenuItem() == menuItem) {
+						currMenuQuantity = orderItem.getQuantity();
+						menuPrice = (int) (menuItems.getMenuItemPrice());
+						orderTotal = order.getOrderTotal();
+						
+						if(quantity < currMenuQuantity) {
+							orderTotal = orderTotal - ((currMenuQuantity - quantity) * menuPrice);
+						} else if(quantity > currMenuQuantity) {
+							orderTotal = orderTotal + ((quantity - currMenuQuantity) * menuPrice);
+						} else {
+							orderTotal = orderTotal + (quantity * menuPrice);
+						}
+						
+						if(quantity == 0) {
+							OrderItem.deleteOrderItem(orderId, menuItem);
+							Order.updateOrderTotal(orderId, orderTotal);
+							showAlert(Alert.AlertType.INFORMATION, "Success", null, "Order item successfully deleted.");
+							order = Order.getOrderByOrderId(orderId);
+							orderTotal = order.getOrderTotal();
+                            if(orderTotal == 0) {
+                                Order.deleteOrder(orderId);
+                            }
+						} else {
+							OrderItem.updateOrderItem(orderId, menuItem, quantity);
+							Order.updateOrderTotal(orderId, orderTotal);
+							showAlert(Alert.AlertType.INFORMATION, "Success", null, "Order item successfully updated.");
+						}
+					}
+				}
+			}
+				
+			loadOrderItemTableData();
+		});
+	}
+	
+	private void initWaiterHandler() {
+		
+		orderItemView.getBackButton().setOnAction(e -> {
+			primaryStage = orderItemView.getPrimaryStage();
+			WaiterView waiterView = new WaiterView(primaryStage);
+			WaiterController waiterController = new WaiterController(waiterView, user);
+		});
+		
 		
 		orderItemView.getUpdateButton().setOnAction(e -> {
 			ArrayList<OrderItem> orderItems;

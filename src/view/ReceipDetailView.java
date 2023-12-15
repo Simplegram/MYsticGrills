@@ -111,4 +111,10 @@ public class ReceipDetailView {
 	public TableColumn<ReceiptDetail, Number> getQuantity() {
 		return quantity;
 	}
+
+	public void setTable(TableView<ReceiptDetail> table) {
+		this.table = table;
+	}
+	
+	
 }

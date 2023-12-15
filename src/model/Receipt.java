@@ -39,10 +39,10 @@ public class Receipt {
 //		}
 
 
-		public static void createReceipt(int orderId, String receiptPaymentType, int receiptPaymentAmount, Date receiptPaymentDate) {
-			String query = String.format("INSERT INTO receipt (orderId, receiptPaymentType, receiptPaymentAmount, receiptPaymentDate) VALUES ( ?, ?, ?, ?)");
+		public static void createReceipt(int receiptOrder, String receiptPaymentType, int receiptPaymentAmount, Date receiptPaymentDate) {
+			String query = String.format("INSERT INTO receipt (receiptOrder, receiptPaymentType, receiptPaymentAmount, receiptPaymentDate) VALUES ( ?, ?, ?, ?)");
 			try (PreparedStatement ps = Connect.getConnection().prepareStatement(query)){
-				ps.setInt(1, orderId);
+				ps.setInt(1, receiptOrder);
 				ps.setString(2, receiptPaymentType);
 				ps.setInt(3, receiptPaymentAmount);
 				ps.setDate(4, receiptPaymentDate);
@@ -71,24 +71,31 @@ public class Receipt {
 			return receipts;
 		}
 
-//		public static ArrayList<Receipt> getReceiptById(int receiptId) {
-//		    ArrayList<Receipt> receipts = new ArrayList<>();
-//		    String query = "SELECT menu.menuItemName, menu.menuItemPrice, `order`.quantity " +
-//		                   "FROM menu JOIN `order` ON menu.menuID = `order`.menuID";
-//		    ResultSet rs = Connect.getConnection().executeQuery(query);
-//		    try {
-//		        while (rs.next()) {
-//		            String menuItemName = rs.getString("menuItemName");
-//		            double menuItemPrice = rs.getDouble("menuItemPrice");
-//		            int quantity = rs.getInt("quantity");
-//		            
-//		            receipts.add(new ReceiptDetail(menuItemName, menuItemPrice, quantity));
-//		        } 
-//		    } catch (SQLException e) {
-//		        e.printStackTrace();
-//		    }
-//		    return receipts;
-//		}
+		public static ArrayList<ReceiptDetail> getReceiptById(int receiptId) {
+		    ArrayList<ReceiptDetail> receipts = new ArrayList<>();
+		    String query = "SELECT m.menuItemName, m.menuItemPrice, oi.quantity FROM orders o JOIN orderitem oi ON oi.orderID = o.orderId JOIN menuitem m ON m.menuItemId = oi.menuItem JOIN receipt r ON r.receiptOrder = o.orderId WHERE r.receiptOrder = ?";
+		    PreparedStatement ps = Connect.getConnection().prepareStatement(query);
+	        ResultSet rs = null;
+	        
+	        try {
+	            ps.setInt(1, receiptId);
+	            rs = ps.executeQuery();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+		    try {
+		        while (rs.next()) {
+		            String menuItemName = rs.getString("m.menuItemName");
+		            double menuItemPrice = rs.getDouble("m.menuItemPrice");
+		            int quantity = rs.getInt("oi.quantity");
+		            
+		            receipts.add(new ReceiptDetail(menuItemName, menuItemPrice, quantity));
+		        } 
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+		    return receipts;
+		}
 		
 		public int getReceiptId() {
 			return receiptId;

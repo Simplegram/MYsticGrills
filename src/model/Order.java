@@ -179,6 +179,26 @@ public class Order {
 		}
 		return orders;
 	}
+	
+	public static ArrayList<Order> getAllCashierOrders(){
+		ArrayList<Order> orders = new ArrayList<>();
+		String query = "SELECT * FROM orders WHERE orderStatus = 'SERVED'";
+		ResultSet rs = Connect.getConnection().executeQuery(query);
+		try {
+			while (rs.next()) {
+				int id = rs.getInt(1);
+				int orderUser = rs.getInt(2);
+				String orderStatus = rs.getString(3);
+				Date orderDate = rs.getDate(4);
+				int orderTotal = rs.getInt(5);
+				orders.add(new Order(id, orderUser, orderStatus, orderDate, orderTotal));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return orders;
+	}
+	
 	public int getOrderId() {
 		return orderId;
 	}

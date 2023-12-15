@@ -78,25 +78,9 @@ public class ReceiptController {
 		}
 	}
 	private void loadReceiptDetailData() {
-		tableTemp = receipDetailView.getTableTemp();
-		
-		menuItemName = receipDetailView.getMenuItemName();
-		menuItemPrice = receipDetailView.getMenuItemPrice();
-		quantity = receipDetailView.getQuantity();
-		
-		ArrayList<OrderItem> orderItems = OrderItem.getAllOrderItemsByOrderId(Integer.parseInt(orderId));
-		
-		for (OrderItem orderItem : orderItems) {
-			MenuItem menuItem = MenuItem.getMenuItemById(orderItem.getMenuItem());
-			
-			Double totalPrice = orderItem.getQuantity() * menuItem.getMenuItemPrice();
-			
-			menuItemName.setCellValueFactory(c -> new SimpleStringProperty(menuItem.getMenuItemName()));
-			menuItemPrice.setCellValueFactory(c -> new SimpleDoubleProperty(totalPrice));
-			quantity.setCellValueFactory(c -> new SimpleIntegerProperty(orderItem.getQuantity()));
-			
-			tableTemp.getColumns().setAll(menuItemName, menuItemPrice, quantity);
-		}
+		ArrayList<ReceiptDetail> receipt = Receipt.getReceiptById(Integer.parseInt(receiptView.getOrderIdInput().getText()));
+		receipDetailView.getTable().getItems().setAll(receipt);
+
 	}
 	
 	private void setupCustTableSelectionListener() {
