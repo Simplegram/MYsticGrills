@@ -27,7 +27,7 @@ public class ReceiptController {
 	private Stage primaryStage;
 	private User user;
 	private ReceipDetailView receipDetailView;
-	private String orderId;
+	private String receiptOrder;
 	
 	private TableView<ReceiptDetail> tableTemp;
 	
@@ -44,10 +44,10 @@ public class ReceiptController {
 		loadTableData();
 	}
 	
-	public ReceiptController(ReceipDetailView receipDetailView, User user, String orderId) {
+	public ReceiptController(ReceipDetailView receipDetailView, User user, String receiptOrder) {
 		this.receipDetailView = receipDetailView;
 		this.user = user;
-		this.orderId = orderId;
+		this.receiptOrder = receiptOrder;
 		initReceiptDetailHandler();
 		loadReceiptDetailData();
 	}
@@ -58,7 +58,7 @@ public class ReceiptController {
 	}
 	
 	private void loadReceiptDetailData() {
-		ArrayList<ReceiptDetail> receipt = Receipt.getReceiptById(Integer.parseInt(orderId));
+		ArrayList<ReceiptDetail> receipt = Receipt.getReceiptById(Integer.parseInt(receiptOrder));
 		receipDetailView.getTable().getItems().setAll(receipt);
 
 	}
@@ -66,7 +66,7 @@ public class ReceiptController {
 	private void setupCustTableSelectionListener() {
         receiptView.getTable().getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-            	receiptView.getOrderIdInput().setText(String.valueOf(newSelection.getOrderId()));
+            	receiptView.getReceiptOrderInput().setText(String.valueOf(newSelection.getReceiptId()));
             }
         });
     }
@@ -80,9 +80,9 @@ public class ReceiptController {
 		
 		receiptView.getReceiptDetailsButton().setOnAction(e->{
 			primaryStage = receiptView.getPrimaryStage();
-			String orderId = receiptView.getOrderIdInput().getText();
+			String receiptOrder = receiptView.getReceiptOrderInput().getText();
 			ReceipDetailView receiptDetailView = new ReceipDetailView(primaryStage);
-			ReceiptController receiptController = new ReceiptController(receiptDetailView, user, orderId);
+			ReceiptController receiptController = new ReceiptController(receiptDetailView, user, receiptOrder);
 		});
 		
 		TableColumn<MenuItem, String> menuItemName = new TableColumn<>("Menu Item Name");

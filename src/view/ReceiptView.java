@@ -26,7 +26,7 @@ import model.Receipt;
 public class ReceiptView extends VBox{
 
 		private Stage primaryStage;
-		private TextField orderIdInput = new TextField();
+		private TextField receiptOrderInput = new TextField();
 		private TextField receiptPaymentTypeInput = new TextField();
 		private TextField receiptPaymentAmountInput = new TextField();
 		private TextField receiptPaymentDateInput = new TextField();
@@ -56,8 +56,8 @@ public class ReceiptView extends VBox{
 			TableColumn<Receipt, Number> receiptID = new TableColumn<>("Receipt ID");
 			receiptID.setCellValueFactory(new PropertyValueFactory<>("receiptId"));
 
-			TableColumn<Receipt, Number> orderID = new TableColumn<>("Order ID");
-			orderID.setCellValueFactory(new PropertyValueFactory<>("orderId"));
+			TableColumn<Receipt, Number> receiptOrder = new TableColumn<>("Order ID");
+			receiptOrder.setCellValueFactory(new PropertyValueFactory<>("receiptOrder"));
 
 			TableColumn<Receipt, Number> receiptPaymentAmount = new TableColumn<>("Receipt Payment Amount");
 			receiptPaymentAmount.setCellValueFactory(new PropertyValueFactory<>("receiptPaymentAmount"));
@@ -68,7 +68,7 @@ public class ReceiptView extends VBox{
 			TableColumn<Receipt, String> receiptPaymentType = new TableColumn<>("Receipt Payment Type");
 			receiptPaymentType.setCellValueFactory(new PropertyValueFactory<>("receiptPaymentType"));
 			table.getColumns().add(receiptID);
-			table.getColumns().add(orderID);
+			table.getColumns().add(receiptOrder);
 			table.getColumns().add(receiptPaymentAmount);
 			table.getColumns().add(receiptPaymentDate);
 			table.getColumns().add(receiptPaymentType);
@@ -84,8 +84,8 @@ public class ReceiptView extends VBox{
 			receiptDetailsButton = new Button("View Receipts Details");
 			
 			form.add(new Label("Order ID:"), 0, 0);
-			form.add(orderIdInput, 1, 0);
-			orderIdInput.setDisable(true);
+			form.add(receiptOrderInput, 1, 0);
+			receiptOrderInput.setDisable(true);
 			
 			form.add(backButton, 0, 6);
 			form.add(receiptDetailsButton, 1, 6);
@@ -101,12 +101,12 @@ public class ReceiptView extends VBox{
 			this.primaryStage = primaryStage;
 		}
 
-		public TextField getOrderIdInput() {
-			return orderIdInput;
+		public TextField getReceiptOrderInput() {
+			return receiptOrderInput;
 		}
 
-		public void setOrderIdInput(TextField orderIdInput) {
-			this.orderIdInput = orderIdInput;
+		public void setReceiptOrderInput(TextField receiptOrderInput) {
+			this.receiptOrderInput = receiptOrderInput;
 		}
 
 		public TextField getReceiptPaymentTypeInput() {

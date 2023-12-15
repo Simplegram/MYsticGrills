@@ -13,23 +13,23 @@ import javafx.beans.property.SimpleStringProperty;
 public class Receipt {
 		
 		private int receiptId;
-		private int orderId;
-		private String receiptPaymentAmount;
-		private int receiptPaymentDate;
-		private Date receiptPaymentType;
+		private int receiptOrder;
+		private int receiptPaymentAmount;
+		private Date receiptPaymentDate;
+		private String receiptPaymentType;
 		private MenuItem menuItem;
 
 //		private final String menuItemName;
 //		private final double menuItemPrice;
 //		private final int quantity;
 		
-		public Receipt(int receiptId, int orderId, String receiptPaymentAmount, int receiptPatmentAmount,Date receiptPaymentDate) {
+		public Receipt(int receiptId, int receiptOrder, int receiptPaymentAmount, Date receiptPaymentDate, String receiptPaymentType) {
 			super();
 			this.receiptId = receiptId;
-			this.orderId = orderId;
+			this.receiptOrder = receiptOrder;
 			this.receiptPaymentAmount = receiptPaymentAmount;
-			this.receiptPaymentDate = receiptPatmentAmount;
-			this.receiptPaymentType = receiptPaymentDate;
+			this.receiptPaymentDate = receiptPaymentDate;
+			this.receiptPaymentType = receiptPaymentType;
 		}
 
 //		public Receipt(String menuItemName, double menuItemPrice, int quantity) {
@@ -40,12 +40,12 @@ public class Receipt {
 
 
 		public static void createReceipt(int receiptOrder, String receiptPaymentType, int receiptPaymentAmount, Date receiptPaymentDate) {
-			String query = String.format("INSERT INTO receipt (receiptOrder, receiptPaymentType, receiptPaymentAmount, receiptPaymentDate) VALUES ( ?, ?, ?, ?)");
+			String query = String.format("INSERT INTO receipt (receiptOrder, receiptPaymentAmount, receiptPaymentDate, receiptPaymentType) VALUES ( ?, ?, ?, ?)");
 			try (PreparedStatement ps = Connect.getConnection().prepareStatement(query)){
 				ps.setInt(1, receiptOrder);
-				ps.setString(2, receiptPaymentType);
-				ps.setInt(3, receiptPaymentAmount);
-				ps.setDate(4, receiptPaymentDate);
+				ps.setInt(2, receiptPaymentAmount);
+				ps.setDate(3, receiptPaymentDate);
+				ps.setString(4, receiptPaymentType);
 				ps.execute();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -59,11 +59,11 @@ public class Receipt {
 			try {
 				while (rs.next()) {
 					int receiptId1 = rs.getInt(1);
-					int orderId = rs.getInt(2);
-					String receiptPaymentType = rs.getString(5);
-					int receiptPatmentAmount = rs.getInt(3);
+					int receiptOrder = rs.getInt(2);
+					int receiptPaymentAmount = rs.getInt(3);
 					Date receiptPaymentDate = rs.getDate(4);
-					receipts.add(new Receipt(receiptId1, orderId, receiptPaymentType,receiptPatmentAmount,receiptPaymentDate));
+					String receiptPaymentType = rs.getString(5);
+					receipts.add(new Receipt(receiptId1, receiptOrder, receiptPaymentAmount, receiptPaymentDate,receiptPaymentType));
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -73,11 +73,14 @@ public class Receipt {
 
 		public static ArrayList<ReceiptDetail> getReceiptById(int receiptId) {
 		    ArrayList<ReceiptDetail> receipts = new ArrayList<>();
-		    String query = "SELECT m.menuItemName AS Name, m.menuItemPrice AS Price, oi.quantity AS Quantity FROM orders o JOIN orderitem oi ON oi.orderID = o.orderId JOIN menuitem m ON m.menuItemId = oi.menuItem JOIN receipt r ON r.receiptOrder = o.orderId WHERE r.receiptOrder = ?";
+		    String query = "SELECT m.menuItemName AS menuItemName, m.menuItemPrice AS menuItemPrice, oi.quantity AS quantity FROM orders o JOIN orderitem oi ON oi.orderID = o.orderId JOIN menuitem m ON m.menuItemId = oi.menuItem JOIN receipt r ON r.receiptOrder = o.orderId WHERE r.receiptId = ?";
 		    PreparedStatement ps = Connect.getConnection().prepareStatement(query);
 	        ResultSet rs = null;
 	        
+	        System.out.println("hello");
+	        
 	        try {
+		        System.out.println("there");
 	            ps.setInt(1, receiptId);
 	            rs = ps.executeQuery();
 	        } catch (SQLException e) {
@@ -86,9 +89,9 @@ public class Receipt {
 	        
 		    try {
 		        while (rs.next()) {
-		            String menuItemName = rs.getString("Name");
-		            double menuItemPrice = rs.getDouble("Price");
-		            int quantity = rs.getInt("Quantity");
+		            String menuItemName = rs.getString("menuItemName");
+		            double menuItemPrice = rs.getDouble("menuItemPrice");
+		            int quantity = rs.getInt("quantity");
 		            
 		            receipts.add(new ReceiptDetail(menuItemName, menuItemPrice, quantity));
 		        } 
@@ -106,35 +109,20 @@ public class Receipt {
 			this.receiptId = receiptId;
 		}
 
-		public int getOrderId() {
-			return orderId;
+		public int getReceiptOrder() {
+			return receiptOrder;
 		}
 
-		public void setOrderId(int orderId) {
-			this.orderId = orderId;
-		}
-
-		public String getReceiptPaymentAmount() {
+		public int getReceiptPaymentAmount() {
 			return receiptPaymentAmount;
 		}
 
-		public void setReceiptPaymentAmount(String receiptPaymentAmount) {
-			this.receiptPaymentAmount = receiptPaymentAmount;
-		}
-
-		public int getReceiptPaymentDate() {
+		public Date getReceiptPaymentDate() {
 			return receiptPaymentDate;
 		}
-		public void setReceiptPaymentDate(int receiptPaymentDate) {
-			this.receiptPaymentDate = receiptPaymentDate;
-		}
 
-		public Date getReceiptPaymentType() {
+		public String getReceiptPaymentType() {
 			return receiptPaymentType;
-		}
-
-		public void setReceiptPaymentType(Date receiptPaymentType) {
-			this.receiptPaymentType = receiptPaymentType;
 		}
 
 		public MenuItem getMenuItem() {
