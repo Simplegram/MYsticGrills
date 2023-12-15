@@ -77,7 +77,7 @@ public class UserController extends Controller {
                 	primaryStage = loginView.getPrimaryStage();
                     AdminView adminView = new AdminView(primaryStage);
                     AdminController adminController = new AdminController(adminView);
-                } else if(userRole.equals("Customer") || userRole.equals("Cashier") || userRole.equals("Chef")) {
+                } else if(userRole.equals("Customer") || userRole.equals("Cashier") || userRole.equals("Chef") || userRole.equals("Waiter")) {
                 	primaryStage = loginView.getPrimaryStage();
                 	CustomerView customerView = new CustomerView(primaryStage);
                 	CustomerController customerController = new CustomerController(customerView, user);

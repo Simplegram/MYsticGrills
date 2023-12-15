@@ -35,7 +35,7 @@ public class UserManagementController extends Controller{
 				return;
 			}
 			
-			if(!role.equals("Admin") && !role.equals("Customer") && !role.equals("Chef") && !role.equals("Waiter") && !role.equals("Cashire")) {
+			if(!role.equals("Admin") && !role.equals("Customer") && !role.equals("Chef") && !role.equals("Waiter") && !role.equals("Cashier")) {
 			    showAlert(Alert.AlertType.ERROR, "Error", null, "Role must be either Admin, Chef, Waiter, Cashier, or Customer" );
 			    return;
 			}

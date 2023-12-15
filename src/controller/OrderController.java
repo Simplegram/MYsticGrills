@@ -53,7 +53,7 @@ public class OrderController extends Controller {
 			loadCashierData();
 		} else if(userRole.equals("Chef")){
 			loadChefData();
-		} else if(userRole.equals("Waiters")) {
+		} else if(userRole.equals("Waiter")) {
 			loadWaitersTableData();
 		}
 	}
@@ -83,7 +83,6 @@ public class OrderController extends Controller {
 			initCashierUIHandler();
 		} else if(userRole.equals("Chef")) {
 			initChefHandler();
-			initChefUIHandler();
 		}
 //		}else if(userRole.equals("Chef")) {
 //			initChefHandler();
@@ -190,43 +189,34 @@ public class OrderController extends Controller {
 	
 	private void initChefUIHandler() {
 		
-		updateButton = chefView.getUpdateButton();
-		form = chefView.getForm();
-	
-		paymentTypeInput = orderItemView.getPaymentTypeInput();
-		paymentAmountInput = orderItemView.getPaymentAmountInput();
-		quantityInput = orderItemView.getQuantityInput();
-		menuItemInput = orderItemView.getMenuItemInput();
-		
-		quantityInput.setVisible(false);
-		updateButton.setText("U");
-		form.add(new Label("Total Price:"), 0, 1);
-		form.add(new Label("Payment Type:"), 0, 3);
-		form.add(new Label("Payment Amount:"), 0, 4);
-	
-		orderIdInput = orderItemView.getOrderIdInput();
-		orderIdInput.setText(String.valueOf(orderId));
+//		updateButton = chefView.getViewDetailButton();
+//		form = chefView.getForm();
+//	
+//		paymentTypeInput = orderItemView.getPaymentTypeInput();
+//		paymentAmountInput = orderItemView.getPaymentAmountInput();
+//		quantityInput = orderItemView.getQuantityInput();
+//		menuItemInput = orderItemView.getMenuItemInput();
+//		
+//		quantityInput.setVisible(false);
+//		updateButton.setText("U");
+//		form.add(new Label("Total Price:"), 0, 1);
+//		form.add(new Label("Payment Type:"), 0, 3);
+//		form.add(new Label("Payment Amount:"), 0, 4);
+//	
+//		orderIdInput = orderItemView.getOrderIdInput();
+//		orderIdInput.setText(String.valueOf(orderId));
 //		menuItemInput.setText(String.valueOf(order.getOrderTotal()));
 	}
 	
 	private void initChefHandler() {
 		
-		orderView.getBackButton().setOnAction(e -> {
-		primaryStage = orderView.getPrimaryStage();
-		CustomerView customerView = new CustomerView(primaryStage);
-		CustomerController customerController = new CustomerController(customerView, user);
-		});
-		
-		chefView.getUpdateButton().setOnAction(e -> {
-			primaryStage = chefView.getPrimaryStage();
-			ArrayList<Order> orders = Order.getAllChefOrders();
+		orderItemView.getBackButton().setOnAction(e -> {
+			primaryStage = orderItemView.getPrimaryStage();
+			ChefView chefView = new ChefView(primaryStage);
 			
-			String updates_t;
-			Boolean pendingExist = false;
-			updates_t = "SERVE";
-			
-			showAlert(Alert.AlertType.INFORMATION, "Success", null, "Order Status Has been Updated");
+			ChefController chefController = new ChefController(chefView, user);
 		});
+			
 	}
 	
 	private void initHandler() {
@@ -453,6 +443,11 @@ public class OrderController extends Controller {
 							OrderItem.deleteOrderItem(orderId, menuItem);
 							Order.updateOrderTotal(orderId, orderTotal);
 							showAlert(Alert.AlertType.INFORMATION, "Success", null, "Order item successfully deleted.");
+							order = Order.getOrderByOrderId(orderId);
+							orderTotal = order.getOrderTotal();
+                            if(orderTotal == 0) {
+                                Order.deleteOrder(orderId);
+                            }
 						} else {
 							OrderItem.updateOrderItem(orderId, menuItem, quantity);
 							Order.updateOrderTotal(orderId, orderTotal);

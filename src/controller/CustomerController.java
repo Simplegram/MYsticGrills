@@ -116,7 +116,7 @@ public class CustomerController {
 			
 		}
 		
-		else if(userRole.equals("Waiters")) {
+		else if(userRole.equals("Waiter")) {
 			vbox.getChildren().addAll(greetings, role, orderViewButton, logoutButton);
 			primaryStage.setTitle("Waiter Page");
 

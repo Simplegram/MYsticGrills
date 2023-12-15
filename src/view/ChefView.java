@@ -22,7 +22,7 @@ public class ChefView {
 	private TextField orderDateInput = new TextField();
 	private TextField orderTotalInput = new TextField();
 	private TableView<Order> table;
-	private Button backButton, viewButton, cheforderViewButton, updateButton;
+	private Button backButton, viewButton, cheforderViewButton, viewDetailButton, prepareButton, deleteButton;
 	private GridPane form;
 
 
@@ -66,12 +66,14 @@ public class ChefView {
 	}
 	
 	private GridPane createOrderForm(TableView<Order> table) {
-		form = new GridPane();
+		GridPane form = new GridPane();
 		form.setVgap(20);
 		form.setHgap(10);
 
 		backButton = new Button("Back");
-		updateButton = new Button("Update");
+		prepareButton = new Button("Update Status");
+		viewDetailButton = new Button("View Detail Order");
+		deleteButton = new Button("Delete");
 		
 		form.add(new Label("Order ID:"), 0, 0);
 		form.add(idInput, 1, 0);
@@ -80,19 +82,40 @@ public class ChefView {
 		form.add(new Label("Order Status:"), 0, 1);
 		form.add(orderStatusInput, 1, 1);
 		orderStatusInput.setDisable(true);
-
+		
 		form.add(new Label("Order Date:"), 0, 2);
 		form.add(orderDateInput, 1, 2);
 		orderDateInput.setDisable(true);
-	
+		
 		form.add(new Label("Order Total:"), 0, 3);
 		form.add(orderTotalInput, 1, 3);
 		orderTotalInput.setDisable(true);
 		
 		form.add(backButton, 0, 4);
-		form.add(updateButton, 1, 4);
+		form.add(prepareButton, 1, 4);
+		form.add(viewDetailButton, 2, 4);
+		form.add(deleteButton, 3, 4);
 		
 		return form;
+	}
+
+	
+	
+	
+	public Button getDeleteButton() {
+		return deleteButton;
+	}
+
+	public void setDeleteButton(Button deleteButton) {
+		this.deleteButton = deleteButton;
+	}
+
+	public Button getPrepareButton() {
+		return prepareButton;
+	}
+
+	public void setPrepareButton(Button prepareButton) {
+		this.prepareButton = prepareButton;
 	}
 
 	public Stage getPrimaryStage() {
@@ -159,12 +182,14 @@ public class ChefView {
 		this.cheforderViewButton = cheforderViewButton;
 	}
 
-	public Button getUpdateButton() {
-		return updateButton;
+
+
+	public Button getViewDetailButton() {
+		return viewDetailButton;
 	}
 
-	public void setUpdateButton(Button updateButton) {
-		this.updateButton = updateButton;
+	public void setViewDetailButton(Button viewDetailButton) {
+		this.viewDetailButton = viewDetailButton;
 	}
 
 	public GridPane getForm() {

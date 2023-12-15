@@ -66,7 +66,7 @@ public class Order {
 	}
 	
 	public static void deleteOrder(int orderId) {
-		String query = String.format("DELETE FROM order WHERE orderId = ?");
+		String query = String.format("DELETE FROM orders WHERE orderId = ?");
 		try (PreparedStatement ps = Connect.getConnection().prepareStatement(query)){
 			ps.setInt(1, orderId);
 			ps.execute();
@@ -163,7 +163,7 @@ public class Order {
 	
 	public static ArrayList<Order> getAllWaiterOrders(){
 		ArrayList<Order> orders = new ArrayList<>();
-		String query = "SELECT * FROM orders WHERE orderStatus = 'PREPARED' OR orderStatus = 'SERVE'";
+		String query = "SELECT * FROM orders WHERE orderStatus = 'PREPARED' OR orderStatus = 'PENDING'";
 		ResultSet rs = Connect.getConnection().executeQuery(query);
 		try {
 			while (rs.next()) {
