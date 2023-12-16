@@ -77,10 +77,7 @@ public class Receipt {
 		    PreparedStatement ps = Connect.getConnection().prepareStatement(query);
 	        ResultSet rs = null;
 	        
-	        System.out.println("hello");
-	        
 	        try {
-		        System.out.println("there");
 	            ps.setInt(1, receiptId);
 	            rs = ps.executeQuery();
 	        } catch (SQLException e) {
