@@ -47,11 +47,18 @@ public class WaiterController extends Controller{
             String orderId_t = waiterView.getIdInput().getText();
             
             if(orderId_t.isEmpty()){
-                showAlert(Alert.AlertType.ERROR, "Error", null, "You must choose a PENDING order!");
+                showAlert(Alert.AlertType.ERROR, "Error", null, "You must choose an order!");
                 return;
             }
             
             int orderId = Integer.parseInt(orderId_t);
+            
+            Order order = Order.getOrderByOrderId(orderId);
+            
+            if(!order.getOrderStatus().equals("PREPARED")) {
+            	showAlert(Alert.AlertType.ERROR, "Error", null, "You can only serve prepared order!");
+                return;
+            }
             
             Order.updateOrder(orderId, "SERVED");
             
@@ -59,7 +66,6 @@ public class WaiterController extends Controller{
         });
         
         waiterView.getDeleteButton().setOnAction(e->{
-            
             Order.deleteOrder(Integer.parseInt(waiterView.getIdInput().getText()));
             
             loadTableData();
